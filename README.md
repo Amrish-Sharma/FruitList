@@ -10,10 +10,10 @@ This Android app displays three icons on the main screen: Fruit, Vegetable, and 
 
 ## Screenshots
 
-![Main Screen](screenshots/main_screen.png)
-![Fruit List](screenshots/fruit_list.png)
-![Vegetable List](screenshots/vegetable_list.png)
-![Animal List](screenshots/animal_list.png)
+![Main Screen](screenshots/mains_screen.jpg)
+![Fruit List](screenshots/fruits.jpg)
+![Vegetable List](screenshots/vegetables.jpg)
+![Animal List](screenshots/animals.jpg)
 
 ## Installation
 
