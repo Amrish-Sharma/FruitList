@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
     ListView listView;
     TextToSpeech textToSpeech;
 
-    String fruitNames[] = {"Banana", "Grape", "Guava", "Mango", "Orange", "Watermelon"};
+    String fruitNames[] = {"Banana", "Grapes", "Guava", "Mango", "Orange", "Watermelon"};
     int fruitImageIds[] = {R.drawable.banana, R.drawable.grape, R.drawable.guava, R.drawable.mango, R.drawable.orange, R.drawable.watermelon};
 
     @Override

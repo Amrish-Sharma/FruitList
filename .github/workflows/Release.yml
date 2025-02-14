@@ -31,4 +31,4 @@ jobs:
         with:
           files: app/build/outputs/apk/release/app-release.apk  # Update with your APK path
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_SECRET }}
