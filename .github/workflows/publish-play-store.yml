@@ -1,0 +1,60 @@
+name: Publish to Google Play
+
+on:
+  workflow_dispatch: 
+    inputs:
+      track:
+        description: 'Track to deploy (production, beta, alpha)'
+        required: true
+        default: 'internal'
+
+  push:
+    tags:
+      - 'v*'  
+jobs:
+  upload:
+    name: Upload Android App to Play Store
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Decode Play Store Service Account JSON
+      run: |
+        echo "${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}" > /tmp/play-store-key.json
+
+    - name: Set Version Name and Version Code
+      id: versioning
+      run: |
+        VERSION_NAME=${GITHUB_REF#refs/tags/v}
+        VERSION_CODE=$(date +%s)
+        echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
+        echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
+        echo "Updating build.gradle..."
+        sed -i "s/versionName \".*\"/versionName \"$VERSION_NAME\"/" app/build.gradle
+        sed -i "s/versionCode [0-9]*/versionCode $VERSION_CODE/" app/build.gradle
+        echo "Version updated to $VERSION_NAME ($VERSION_CODE)"
+
+    - name: Build App Bundle
+      run: ./gradlew bundleRelease
+
+    - name: Create WhatsNew Changelog
+      run: |
+        mkdir -p app/whatsnew
+        echo "Release $VERSION_NAME 🎉\n\n- Bug fixes\n- Performance improvements" > app/whatsnew/en-US.txt
+
+    - name: Upload to Google Play
+      uses: r0adkll/upload-google-play@v1
+      with:
+        serviceAccountJson: /tmp/play-store-key.json
+        packageName: com.example.yourapp # <--- your real package name
+        releaseFile: app/build/outputs/bundle/release/app-release.aab
+        track: ${{ github.event.inputs.track || 'production' }}
+        whatsNewDirectory: app/whatsnew
