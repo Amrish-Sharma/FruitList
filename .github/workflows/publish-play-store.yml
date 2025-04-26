@@ -54,7 +54,7 @@ jobs:
       uses: r0adkll/upload-google-play@v1
       with:
         serviceAccountJson: /tmp/play-store-key.json
-        packageName: com.example.yourapp # <--- your real package name
+        packageName: com.cb.FruitList 
         releaseFile: app/build/outputs/bundle/release/app-release.aab
         track: ${{ github.event.inputs.track || 'production' }}
         whatsNewDirectory: app/whatsnew
