@@ -20,6 +20,7 @@
         <activity android:name=".FruitActivity" />
         <activity android:name=".VegetableActivity" />
         <activity android:name=".AnimalActivity" />
+        <activity android:name=".TransportActivity" />
     </application>
 
 </manifest>
