@@ -9,7 +9,7 @@ import androidx.activity.EdgeToEdge;
 
 public class MainActivity extends AppCompatActivity {
 
-    ImageView fruitIcon, vegetableIcon, animalIcon,vehicleIcon;
+    ImageView fruitIcon, vegetableIcon, animalIcon,vehicleIcon,birdIcon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
         vegetableIcon = findViewById(R.id.vegetableIcon);
         animalIcon = findViewById(R.id.animalIcon);
         vehicleIcon = findViewById(R.id.vehicleIcon);
+        birdIcon = findViewById(R.id.birdIcon);
 
         fruitIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,6 +51,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, TransportActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        birdIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, BirdActivity.class);
                 startActivity(intent);
             }
         });
