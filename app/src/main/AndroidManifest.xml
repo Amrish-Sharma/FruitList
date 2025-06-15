@@ -22,6 +22,7 @@
         <activity android:name=".AnimalActivity" />
         <activity android:name=".TransportActivity" />
         <activity android:name =".BirdActivity"/>
+        <activity android:name=".FlowerActivity" />
     </application>
 
 </manifest>
