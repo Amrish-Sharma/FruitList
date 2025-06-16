@@ -13,13 +13,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 
-public class TransportActivity extends AppCompatActivity {
+public class FlowerActivity extends AppCompatActivity {
 
     ListView listView;
     TextToSpeech textToSpeech;
 
-    String vehicleNames[] = {"BiCycle", "Motorcycle", "Car", "Truck", "Bus", "Aeroplane"};
-    int vehicleImageIds[] = {R.drawable.cycle, R.drawable.motorcycle, R.drawable.car, R.drawable.truck, R.drawable.bus, R.drawable.plane};
+    String flowerNames[] = {"Sunflower", "Rose", "Lily","Hibiscus","Jasmine","Marigold"};
+    int flowerImageIds[] = {R.drawable.sunflower, R.drawable.rose, R.drawable.lily,R.drawable.hibiscus,R.drawable.jasmine,R.drawable.marigold};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,10 +29,10 @@ public class TransportActivity extends AppCompatActivity {
         listView = findViewById(R.id.listView);
 
         ArrayList<HashMap<String, Object>> list = new ArrayList<>();
-        for (int i = 0; i < vehicleNames.length; i++) {
+        for (int i = 0; i < flowerNames.length; i++) {
             HashMap<String, Object> map = new HashMap<>();
-            map.put("name", vehicleNames[i]);
-            map.put("image", vehicleImageIds[i]);
+            map.put("name", flowerNames[i]);
+            map.put("image", flowerImageIds[i]);
             list.add(map);
         }
 
@@ -54,7 +54,7 @@ public class TransportActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String name = vehicleNames[position];
+                String name = flowerNames[position];
                 textToSpeech.speak(name, TextToSpeech.QUEUE_FLUSH, null, null);
             }
         });
