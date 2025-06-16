@@ -18,8 +18,8 @@ public class FlowerActivity extends AppCompatActivity {
     ListView listView;
     TextToSpeech textToSpeech;
 
-    String flowerNames[] = {"Sunflower", "Rose", "Lily"};
-    int flowerImageIds[] = {R.drawable.sunflower, R.drawable.rose, R.drawable.lily};
+    String flowerNames[] = {"Sunflower", "Rose", "Lily","Hibiscus","Jasmine","Marigold"};
+    int flowerImageIds[] = {R.drawable.sunflower, R.drawable.rose, R.drawable.lily,R.drawable.hibiscus,R.drawable.jasmine,R.drawable.marigold};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
