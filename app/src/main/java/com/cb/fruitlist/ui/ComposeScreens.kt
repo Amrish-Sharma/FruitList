@@ -2,126 +2,164 @@ package com.cb.fruitlist.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Divider
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cb.fruitlist.R
-
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.runtime.mutableStateOf
 
 @Composable
 fun MainScreen(onCategoryClick: (String) -> Unit) {
-    // Use a vertical scrollable column with weight for each category
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White),
+            .background(Color(0xFFFFE082)) // Soft, bright orange background
     ) {
-        CategorySection(iconRes = R.drawable.fruit_icon, label = "Fruit", onClick = { onCategoryClick("Fruit") }, modifier = Modifier.weight(1f))
-        HorizontalDivider(
-            modifier = Modifier.padding(vertical = 4.dp),
-            thickness = 1.dp,
-            color = Color.Black
-        )
-        CategorySection(iconRes = R.drawable.vegetable_icon, label = "Vegetable", onClick = { onCategoryClick("Vegetable") }, modifier = Modifier.weight(1f))
-        HorizontalDivider(
-            modifier = Modifier.padding(vertical = 4.dp),
-            thickness = 1.dp,
-            color = Color.Black
-        )
-        CategorySection(iconRes = R.drawable.animal_icon, label = "Animal", onClick = { onCategoryClick("Animal") }, modifier = Modifier.weight(1f))
-        HorizontalDivider(
-            modifier = Modifier.padding(vertical = 4.dp),
-            thickness = 1.dp,
-            color = Color.Black
-        )
-        CategorySection(iconRes = R.drawable.vehicle_icon, label = "Vehicle", onClick = { onCategoryClick("Vehicle") }, modifier = Modifier.weight(1f))
-        HorizontalDivider(
-            modifier = Modifier.padding(vertical = 4.dp),
-            thickness = 1.dp,
-            color = Color.Black
-        )
-        CategorySection(iconRes = R.drawable.bird_icon, label = "Bird", onClick = { onCategoryClick("Bird") }, modifier = Modifier.weight(1f))
-        HorizontalDivider(
-            modifier = Modifier.padding(vertical = 4.dp),
-            thickness = 1.dp,
-            color = Color.Black
-        )
-        CategorySection(iconRes = R.drawable.flower_icon, label = "Flower", onClick = { onCategoryClick("Flower") }, modifier = Modifier.weight(1f))
-    }
-}
-
-@Composable
-fun CategorySection(iconRes: Int, label: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable { onClick() }
-            .padding(vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        Image(
-            painter = painterResource(id = iconRes),
-            contentDescription = label,
-            modifier = Modifier.size(80.dp)
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        Text(
-            text = label,
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Bold
-        )
-    }
-}
-
-@Composable
-fun ListScreen(items: List<ListItemData>, onItemClick: (ListItemData) -> Unit = {}) {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        items(items) { item ->
-            ListRowItem(item = item, onClick = { onItemClick(item) })
+        Row(
+            modifier = Modifier.weight(1f),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            CategoryCell(iconRes = R.drawable.fruit_icon, label = "Fruit", onClick = { onCategoryClick("Fruit") }, modifier = Modifier.weight(1f))
+            CategoryCell(iconRes = R.drawable.vegetable_icon, label = "Vegetable", onClick = { onCategoryClick("Vegetable") }, modifier = Modifier.weight(1f))
+        }
+        Row(
+            modifier = Modifier.weight(1f),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            CategoryCell(iconRes = R.drawable.animal_icon, label = "Animal", onClick = { onCategoryClick("Animal") }, modifier = Modifier.weight(1f))
+            CategoryCell(iconRes = R.drawable.vehicle_icon, label = "Vehicle", onClick = { onCategoryClick("Vehicle") }, modifier = Modifier.weight(1f))
+        }
+        Row(
+            modifier = Modifier.weight(1f),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            CategoryCell(iconRes = R.drawable.bird_icon, label = "Bird", onClick = { onCategoryClick("Bird") }, modifier = Modifier.weight(1f))
+            CategoryCell(iconRes = R.drawable.flower_icon, label = "Flower", onClick = { onCategoryClick("Flower") }, modifier = Modifier.weight(1f))
         }
     }
 }
 
 @Composable
-fun ListRowItem(item: ListItemData, onClick: () -> Unit = {}) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() }
-            .padding(10.dp),
-        verticalAlignment = Alignment.CenterVertically
+fun CategoryCell(
+    iconRes: Int,
+    label: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var pressed by remember { mutableStateOf(false) }
+    val scale by animateFloatAsState(if (pressed) 1.08f else 1f, label = "scale")
+    Card(
+        modifier = modifier
+            .padding(12.dp)
+            .fillMaxHeight()
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onPress = {
+                        pressed = true
+                        tryAwaitRelease()
+                        pressed = false
+                        onClick()
+                    }
+                )
+            }
+            .scale(scale),
+        shape = RoundedCornerShape(32.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White.copy(alpha = 0.85f)
+        ),
+        elevation = CardDefaults.cardElevation(8.dp)
     ) {
-        Image(
-            painter = painterResource(id = item.imageRes),
-            contentDescription = item.text,
-            modifier = Modifier.size(120.dp)
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        Text(
-            text = item.text,
-            fontSize = 40.sp,
-            fontWeight = FontWeight.Bold,
-            fontStyle = FontStyle.Italic,
-            color = Color(0xFF808080),
-            modifier = Modifier.padding(top = 40.dp, end = 20.dp)
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFFB3E5FC), // light blue
+                            Color(0xFFE1BEE7)  // light purple
+                        )
+                    )
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.padding(8.dp)
+            ) {
+                Image(
+                    painter = painterResource(id = iconRes),
+                    contentDescription = label,
+                    modifier = Modifier.size(96.dp)
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = label,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.SansSerif,
+                    fontStyle = FontStyle.Italic,
+                    color = Color(0xFF1976D2),
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
     }
 }
+
+@Composable
+fun ListScreen(items: List<ListItemData>, onItemClick: (ListItemData) -> Unit = {}) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFFFE082)) // Soft, bright orange background
+    ) {
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(0.dp) // Remove padding to cover the whole screen
+        ) {
+            items(items) { item ->
+                CategoryCell(
+                    iconRes = item.imageRes,
+                    label = item.text,
+                    onClick = { onItemClick(item) },
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .fillMaxSize() // Ensure each cell fills its grid space
+                        .aspectRatio(1f)
+                )
+            }
+        }
+    }
+}
+
 
 data class ListItemData(val imageRes: Int, val text: String)
