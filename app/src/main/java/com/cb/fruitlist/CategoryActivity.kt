@@ -21,7 +21,7 @@ class CategoryActivity : ComponentActivity() {
                 ListItemData(R.drawable.guava, "Guava"),
                 ListItemData(R.drawable.grape, "Grapes"),
                 ListItemData(R.drawable.pineapple, "Pineapple"),
-                ListItemData(R.drawable.watermelon, "Watermelon"),
+                ListItemData(R.drawable.strawberry, "Strawberry"),
             )
             "Vegetable" -> listOf(
                 ListItemData(R.drawable.potato, "Potato"),
