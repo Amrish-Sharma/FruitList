@@ -12,7 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -37,7 +36,8 @@ fun MainScreen(onCategoryClick: (String) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFFFE082)) // Soft, bright orange background
+
+            .background(Color(0xFFFFF9C4)) // Softer, less saturated yellow for comfort
     ) {
         Row(
             modifier = Modifier.weight(1f),
@@ -122,9 +122,8 @@ fun CategoryCell(
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
                     text = label,
-                    fontSize = 24.sp,
+                    fontSize = 28.sp, // Keep increased size for readability
                     fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.SansSerif,
                     fontStyle = FontStyle.Italic,
                     color = Color(0xFF1976D2),
                     textAlign = TextAlign.Center
@@ -139,7 +138,7 @@ fun ListScreen(items: List<ListItemData>, onItemClick: (ListItemData) -> Unit = 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFFFE082)) // Soft, bright orange background
+            .background(Color(0xFFFFF9C4)) // Softer, less saturated yellow for comfort
     ) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
