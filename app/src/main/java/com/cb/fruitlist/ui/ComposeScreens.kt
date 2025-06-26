@@ -23,64 +23,66 @@ import com.cb.fruitlist.R
 
 @Composable
 fun MainScreen(onCategoryClick: (String) -> Unit) {
+    // Use a vertical scrollable column with weight for each category
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White),
-        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        CategorySection(iconRes = R.drawable.fruit_icon, label = "Fruit" ,onClick = { onCategoryClick("Fruit") })
+        CategorySection(iconRes = R.drawable.fruit_icon, label = "Fruit", onClick = { onCategoryClick("Fruit") }, modifier = Modifier.weight(1f))
         HorizontalDivider(
-            modifier = Modifier.padding(vertical = 8.dp),
+            modifier = Modifier.padding(vertical = 4.dp),
             thickness = 1.dp,
             color = Color.Black
         )
-        CategorySection(iconRes = R.drawable.vegetable_icon, label = "Vegetable", onClick = { onCategoryClick("Vegetable") })
+        CategorySection(iconRes = R.drawable.vegetable_icon, label = "Vegetable", onClick = { onCategoryClick("Vegetable") }, modifier = Modifier.weight(1f))
         HorizontalDivider(
-            modifier = Modifier.padding(vertical = 8.dp),
+            modifier = Modifier.padding(vertical = 4.dp),
             thickness = 1.dp,
             color = Color.Black
         )
-        CategorySection(iconRes = R.drawable.animal_icon, label = "Animal", onClick = { onCategoryClick("Animal") })
+        CategorySection(iconRes = R.drawable.animal_icon, label = "Animal", onClick = { onCategoryClick("Animal") }, modifier = Modifier.weight(1f))
         HorizontalDivider(
-            modifier = Modifier.padding(vertical = 8.dp),
+            modifier = Modifier.padding(vertical = 4.dp),
             thickness = 1.dp,
             color = Color.Black
         )
-        CategorySection(iconRes = R.drawable.vehicle_icon, label = "Vehicle", onClick = { onCategoryClick("Vehicle") })
+        CategorySection(iconRes = R.drawable.vehicle_icon, label = "Vehicle", onClick = { onCategoryClick("Vehicle") }, modifier = Modifier.weight(1f))
         HorizontalDivider(
-            modifier = Modifier.padding(vertical = 8.dp),
+            modifier = Modifier.padding(vertical = 4.dp),
             thickness = 1.dp,
             color = Color.Black
         )
-        CategorySection(iconRes = R.drawable.bird_icon, label = "Bird", onClick = { onCategoryClick("Bird") })
+        CategorySection(iconRes = R.drawable.bird_icon, label = "Bird", onClick = { onCategoryClick("Bird") }, modifier = Modifier.weight(1f))
         HorizontalDivider(
-            modifier = Modifier.padding(vertical = 8.dp),
+            modifier = Modifier.padding(vertical = 4.dp),
             thickness = 1.dp,
             color = Color.Black
         )
-        CategorySection(iconRes = R.drawable.flower_icon, label = "Flower", onClick = { onCategoryClick("Flower") })
+        CategorySection(iconRes = R.drawable.flower_icon, label = "Flower", onClick = { onCategoryClick("Flower") }, modifier = Modifier.weight(1f))
     }
 }
 
 @Composable
-fun CategorySection(iconRes: Int, label: String, onClick: () -> Unit) {
-    Column(
-        modifier = Modifier
-            .wrapContentWidth()
-            .padding(bottom = 16.dp)
-            .clickable { onClick() },
-        horizontalAlignment = Alignment.CenterHorizontally
+fun CategorySection(iconRes: Int, label: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
+            .padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
     ) {
         Image(
             painter = painterResource(id = iconRes),
             contentDescription = label,
-            modifier = Modifier.size(120.dp) // Increased from 64.dp to 120.dp
+            modifier = Modifier.size(80.dp)
         )
+        Spacer(modifier = Modifier.width(16.dp))
         Text(
             text = label,
-            fontSize = 18.sp,
-            modifier = Modifier.padding(top = 8.dp)
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Bold
         )
     }
 }
