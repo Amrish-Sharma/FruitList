@@ -40,16 +40,16 @@ fun MainScreen(onCategoryClick: (String) -> Unit) {
     val context = LocalContext.current
     val tts = remember {
         var ttsInstance: TextToSpeech? = null
-        TextToSpeech(context) { ttsEngineStatus ->
+        ttsInstance = TextToSpeech(context) { ttsEngineStatus ->
             if (ttsEngineStatus == TextToSpeech.SUCCESS) {
-                val locale =
-                    context.resources.configuration.locales[0]
-                ttsInstance?.language = locale
+                val ttsLocale = Locale("en", "IN")
+                ttsInstance?.language = ttsLocale
             }
-        }.also { ttsInstance = it }
+        }
+        ttsInstance
     }
     DisposableEffect(Unit) {
-        onDispose { tts.shutdown() }
+        onDispose { tts?.shutdown() }
     }
     Column(
         modifier = Modifier
@@ -173,11 +173,13 @@ fun ListScreen(items: List<ListItemData>, onItemClick: (ListItemData) -> Unit = 
     val context = LocalContext.current
     val tts = remember {
         var ttsInstance: TextToSpeech? = null
-        TextToSpeech(context) { ttsEngineStatus ->
+        ttsInstance = TextToSpeech(context) { ttsEngineStatus ->
             if (ttsEngineStatus == TextToSpeech.SUCCESS) {
-                ttsInstance?.language = Locale.getDefault()
+                val ttsLocale = Locale("en", "IN")
+                ttsInstance?.language = ttsLocale
             }
-        }.also { ttsInstance = it }
+        }
+        ttsInstance
     }
     DisposableEffect(Unit) {
         onDispose { tts.shutdown() }
