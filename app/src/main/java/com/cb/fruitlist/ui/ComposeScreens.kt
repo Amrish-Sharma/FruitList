@@ -25,11 +25,13 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cb.fruitlist.R
@@ -49,7 +51,7 @@ fun MainScreen(onCategoryClick: (String) -> Unit) {
         ttsInstance
     }
     DisposableEffect(Unit) {
-        onDispose { tts?.shutdown() }
+        onDispose { tts.shutdown() }
     }
     Column(
         modifier = Modifier
@@ -108,8 +110,11 @@ fun CategoryCell(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp
     var pressed by remember { mutableStateOf(false) }
     val scale by animateFloatAsState(if (pressed) 1.08f else 1f, label = "scale")
+    val dynamicFontSize = (screenWidth / 14).sp
     Card(
         modifier = modifier
             .padding(12.dp)
@@ -157,11 +162,13 @@ fun CategoryCell(
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
                     text = label,
-                    fontSize = 28.sp, // Keep increased size for readability
+                    fontSize = dynamicFontSize, // Keep increased size for readability
                     fontWeight = FontWeight.Bold,
                     fontStyle = FontStyle.Italic,
                     color = Color(0xFF1976D2),
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         }
