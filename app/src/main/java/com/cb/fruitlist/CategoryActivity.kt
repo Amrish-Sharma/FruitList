@@ -3,6 +3,7 @@ package com.cb.fruitlist
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import com.cb.fruitlist.ui.ListItemData
@@ -11,6 +12,7 @@ import com.cb.fruitlist.ui.ListScreen
 class CategoryActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         val categoryName = intent.getStringExtra("category_name") ?: "Category"
         val items = when (categoryName) {
             "Fruit" -> listOf(

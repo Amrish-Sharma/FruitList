@@ -210,11 +210,12 @@ fun ListScreen(items: List<ListItemData>, onItemClick: (ListItemData) -> Unit = 
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFFFF9C4))
+            .padding(WindowInsets.systemBars.asPaddingValues())
     ) {
         LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
+            columns = GridCells.Adaptive(minSize = 160.dp),
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(0.dp)
+            contentPadding = PaddingValues(8.dp)
         ) {
             itemsIndexed(items) { index, item ->
                 CategoryCell(
