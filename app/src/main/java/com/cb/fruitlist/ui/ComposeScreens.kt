@@ -5,11 +5,21 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
@@ -21,14 +31,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -36,6 +44,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cb.fruitlist.R
 import java.util.Locale
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.asPaddingValues
 
 @Composable
 fun MainScreen(onCategoryClick: (String) -> Unit) {
@@ -57,6 +68,7 @@ fun MainScreen(onCategoryClick: (String) -> Unit) {
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFFFF9C4))
+            .padding(WindowInsets.systemBars.asPaddingValues())
     ) {
         Row(
             modifier = Modifier.weight(1f),
@@ -108,17 +120,36 @@ fun CategoryCell(
     iconRes: Int,
     label: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    colorIndex: Int = 0 // New parameter for color cycling
 ) {
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp
     var pressed by remember { mutableStateOf(false) }
     val scale by animateFloatAsState(if (pressed) 1.08f else 1f, label = "scale")
     val dynamicFontSize = (screenWidth / 14).sp
+    // Define a palette of toddler-safe, vibrant colors
+    val cardColors = listOf(
+        Color(0xFFFFF176), // Yellow
+        Color(0xFF81C784), // Green
+        Color(0xFF64B5F6), // Blue
+        Color(0xFFFF8A65), // Orange
+        Color(0xFFBA68C8), // Purple
+        Color(0xFFFFB74D), // Light Orange
+        Color(0xFFAED581), // Light Green
+        Color(0xFF4DD0E1), // Cyan
+        Color(0xFFE57373), // Red
+        Color(0xFFFFD54F)  // Gold
+    )
+    val cardColor = cardColors[colorIndex % cardColors.size]
     Card(
         modifier = modifier
             .padding(12.dp)
             .fillMaxHeight()
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            }
             .pointerInput(Unit) {
                 detectTapGestures(
                     onPress = {
@@ -128,49 +159,33 @@ fun CategoryCell(
                         onClick()
                     }
                 )
-            }
-            .scale(scale),
-        shape = RoundedCornerShape(32.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White.copy(alpha = 0.85f)
-        ),
+            },
+        colors = CardDefaults.cardColors(containerColor = cardColor),
         elevation = CardDefaults.cardElevation(8.dp)
     ) {
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            Color(0xFFB3E5FC), // light blue
-                            Color(0xFFE1BEE7)  // light purple
-                        )
-                    )
-                ),
-            contentAlignment = Alignment.Center
+                .padding(8.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier.padding(8.dp)
-            ) {
-                Image(
-                    painter = painterResource(id = iconRes),
-                    contentDescription = label,
-                    modifier = Modifier.size(96.dp)
-                )
-                Spacer(modifier = Modifier.height(12.dp))
-                Text(
-                    text = label,
-                    fontSize = dynamicFontSize, // Keep increased size for readability
-                    fontWeight = FontWeight.Bold,
-                    fontStyle = FontStyle.Italic,
-                    color = Color(0xFF1976D2),
-                    textAlign = TextAlign.Center,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
+            Image(
+                painter = painterResource(id = iconRes),
+                contentDescription = label,
+                modifier = Modifier
+                    .size(80.dp)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = label,
+                fontSize = dynamicFontSize,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black,
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
 }
@@ -195,13 +210,14 @@ fun ListScreen(items: List<ListItemData>, onItemClick: (ListItemData) -> Unit = 
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFFFF9C4))
+            .padding(WindowInsets.systemBars.asPaddingValues())
     ) {
         LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
+            columns = GridCells.Adaptive(minSize = 160.dp),
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(0.dp) // Remove padding to cover the whole screen
+            contentPadding = PaddingValues(8.dp)
         ) {
-            items(items) { item ->
+            itemsIndexed(items) { index, item ->
                 CategoryCell(
                     iconRes = item.imageRes,
                     label = item.text,
@@ -209,9 +225,10 @@ fun ListScreen(items: List<ListItemData>, onItemClick: (ListItemData) -> Unit = 
                         tts.speak(item.text, TextToSpeech.QUEUE_FLUSH, null, null)
                         onItemClick(item)
                     },
+                    colorIndex = index,
                     modifier = Modifier
                         .padding(8.dp)
-                        .fillMaxSize() // Ensure each cell fills its grid space
+                        .fillMaxSize()
                         .aspectRatio(1f)
                 )
             }

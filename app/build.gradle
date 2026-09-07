@@ -1,19 +1,18 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 }
 
 android {
     namespace 'com.cb.fruitlist'
-    compileSdk 35
+    compileSdk 37
 
     defaultConfig {
         applicationId "com.cb.fruitlist"
-        minSdk 31
-        targetSdk 35
-        versionCode 9
-        versionName "1.7"
+        minSdkVersion 23
+        targetSdk 37
+        versionCode 12
+        versionName "1.9.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -34,11 +33,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
-    }
-    kotlinOptions {
-        jvmTarget = '11'
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     buildFeatures {
         compose true
