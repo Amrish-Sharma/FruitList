@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "com.cb.fruitlist"
-        minSdkVersion 23
+        minSdkVersion 24
         targetSdk 37
         versionCode 15
         versionName "2.0"
