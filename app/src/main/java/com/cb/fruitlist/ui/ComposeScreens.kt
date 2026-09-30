@@ -1,7 +1,13 @@
 package com.cb.fruitlist.ui
 
 import android.speech.tts.TextToSpeech
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -20,14 +26,19 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,14 +60,16 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.asPaddingValues
 
 @Composable
-fun MainScreen(onCategoryClick: (String) -> Unit) {
+fun rememberTts(onReady: () -> Unit = {}): TextToSpeech {
     val context = LocalContext.current
+    val currentOnReady by rememberUpdatedState(onReady)
     val tts = remember {
         var ttsInstance: TextToSpeech? = null
         ttsInstance = TextToSpeech(context) { ttsEngineStatus ->
             if (ttsEngineStatus == TextToSpeech.SUCCESS) {
                 val ttsLocale = Locale("en", "IN")
                 ttsInstance?.language = ttsLocale
+                currentOnReady()
             }
         }
         ttsInstance
@@ -64,6 +77,43 @@ fun MainScreen(onCategoryClick: (String) -> Unit) {
     DisposableEffect(Unit) {
         onDispose { tts.shutdown() }
     }
+    return tts
+}
+
+@Composable
+fun PulsingPlayButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+    val pulse = rememberInfiniteTransition(label = "playPulse")
+    val scale by pulse.animateFloat(
+        initialValue = 1f,
+        targetValue = 1.1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 700, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "playScale"
+    )
+    Button(
+        onClick = onClick,
+        shape = RoundedCornerShape(50),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color(0xFFFF7043),
+            contentColor = Color.White
+        ),
+        elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp),
+        modifier = modifier
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            }
+            .height(80.dp)
+    ) {
+        Text(text = "⭐ ▶ Play", fontSize = 32.sp, fontWeight = FontWeight.Bold)
+    }
+}
+
+@Composable
+fun MainScreen(onCategoryClick: (String) -> Unit, onPlayClick: () -> Unit) {
+    val tts = rememberTts()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -112,6 +162,15 @@ fun MainScreen(onCategoryClick: (String) -> Unit) {
                 onCategoryClick("Flower")
             }, modifier = Modifier.weight(1f))
         }
+        PulsingPlayButton(
+            onClick = {
+                tts.speak("Let's play a game!", TextToSpeech.QUEUE_FLUSH, null, null)
+                onPlayClick()
+            },
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(vertical = 16.dp)
+        )
     }
 }
 
@@ -121,12 +180,14 @@ fun CategoryCell(
     label: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    colorIndex: Int = 0 // New parameter for color cycling
+    colorIndex: Int = 0, // New parameter for color cycling
+    showLabel: Boolean = true
 ) {
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp
     var pressed by remember { mutableStateOf(false) }
     val scale by animateFloatAsState(if (pressed) 1.08f else 1f, label = "scale")
+    val currentOnClick by rememberUpdatedState(onClick)
     val dynamicFontSize = (screenWidth / 14).sp
     // Define a palette of toddler-safe, vibrant colors
     val cardColors = listOf(
@@ -156,7 +217,7 @@ fun CategoryCell(
                         pressed = true
                         tryAwaitRelease()
                         pressed = false
-                        onClick()
+                        currentOnClick()
                     }
                 )
             },
@@ -176,36 +237,29 @@ fun CategoryCell(
                 modifier = Modifier
                     .size(80.dp)
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = label,
-                fontSize = dynamicFontSize,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black,
-                textAlign = TextAlign.Center,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            if (showLabel) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = label,
+                    fontSize = dynamicFontSize,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black,
+                    textAlign = TextAlign.Center,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
         }
     }
 }
 
 @Composable
-fun ListScreen(items: List<ListItemData>, onItemClick: (ListItemData) -> Unit = {}) {
-    val context = LocalContext.current
-    val tts = remember {
-        var ttsInstance: TextToSpeech? = null
-        ttsInstance = TextToSpeech(context) { ttsEngineStatus ->
-            if (ttsEngineStatus == TextToSpeech.SUCCESS) {
-                val ttsLocale = Locale("en", "IN")
-                ttsInstance?.language = ttsLocale
-            }
-        }
-        ttsInstance
-    }
-    DisposableEffect(Unit) {
-        onDispose { tts.shutdown() }
-    }
+fun ListScreen(
+    items: List<ListItemData>,
+    onItemClick: (ListItemData) -> Unit = {},
+    onPlayClick: (() -> Unit)? = null
+) {
+    val tts = rememberTts()
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -215,7 +269,12 @@ fun ListScreen(items: List<ListItemData>, onItemClick: (ListItemData) -> Unit = 
         LazyVerticalGrid(
             columns = GridCells.Adaptive(minSize = 160.dp),
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(8.dp)
+            contentPadding = PaddingValues(
+                start = 8.dp,
+                top = 8.dp,
+                end = 8.dp,
+                bottom = if (onPlayClick != null) 100.dp else 8.dp
+            )
         ) {
             itemsIndexed(items) { index, item ->
                 CategoryCell(
@@ -231,6 +290,21 @@ fun ListScreen(items: List<ListItemData>, onItemClick: (ListItemData) -> Unit = 
                         .fillMaxSize()
                         .aspectRatio(1f)
                 )
+            }
+        }
+        if (onPlayClick != null) {
+            ExtendedFloatingActionButton(
+                onClick = {
+                    tts.speak("Let's play!", TextToSpeech.QUEUE_FLUSH, null, null)
+                    onPlayClick()
+                },
+                containerColor = Color(0xFFFF7043),
+                contentColor = Color.White,
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(24.dp)
+            ) {
+                Text(text = "⭐ Play", fontSize = 26.sp, fontWeight = FontWeight.Bold)
             }
         }
     }

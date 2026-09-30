@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import com.cb.fruitlist.data.CategoryData
 import com.cb.fruitlist.ui.MainScreen
 
 class MainActivity : ComponentActivity() {
@@ -16,11 +17,18 @@ class MainActivity : ComponentActivity() {
         setContent {
             MaterialTheme {
                 Surface(color = MaterialTheme.colorScheme.background) {
-                    MainScreen { categoryName ->
-                        val intent = Intent(this, CategoryActivity::class.java)
-                        intent.putExtra("category_name", categoryName)
-                        startActivity(intent)
-                    }
+                    MainScreen(
+                        onCategoryClick = { categoryName ->
+                            val intent = Intent(this, CategoryActivity::class.java)
+                            intent.putExtra("category_name", categoryName)
+                            startActivity(intent)
+                        },
+                        onPlayClick = {
+                            val intent = Intent(this, QuizActivity::class.java)
+                            intent.putExtra("category_name", CategoryData.MIXED)
+                            startActivity(intent)
+                        }
+                    )
                 }
             }
         }
