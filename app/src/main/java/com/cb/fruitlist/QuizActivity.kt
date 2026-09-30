@@ -1,6 +1,5 @@
 package com.cb.fruitlist
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -8,9 +7,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import com.cb.fruitlist.data.CategoryData
-import com.cb.fruitlist.ui.ListScreen
+import com.cb.fruitlist.ui.QuizScreen
 
-class CategoryActivity : ComponentActivity() {
+class QuizActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -19,11 +18,7 @@ class CategoryActivity : ComponentActivity() {
         setContent {
             MaterialTheme {
                 Surface(color = MaterialTheme.colorScheme.background) {
-                    ListScreen(items, onPlayClick = {
-                        val intent = Intent(this, QuizActivity::class.java)
-                        intent.putExtra("category_name", categoryName)
-                        startActivity(intent)
-                    })
+                    QuizScreen(items, onBack = { finish() })
                 }
             }
         }

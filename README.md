@@ -7,6 +7,9 @@ This Android app displays three icons on the main screen: Fruit, Vegetable, and 
 - Displays three icons on the main screen: Fruit, Vegetable, and Animal.
 - Opens a list of items when an icon is clicked.
 - Speaks the name of the item when clicked.
+- **"Find the..." quiz:** the app says "Find the Mango!" and the child picks the right picture out of four.
+  - Right answers earn stars with a bounce and confetti. Wrong answers gently shake and the prompt repeats.
+  - Start a quiz for one category from the ⭐ Play button on its list, or a quiz mixing all categories from the pulsing Play button on the home screen.
 
 ## Screenshots
 
@@ -14,6 +17,12 @@ This Android app displays three icons on the main screen: Fruit, Vegetable, and 
 ![Fruit List](screenshots/fruits.png)
 ![Vegetable List](screenshots/vegetables.png)
 ![Animal List](screenshots/animals.png)
+
+### "Find the..." Quiz
+
+| Home screen Play button | Question | Correct answer | Result |
+|:---:|:---:|:---:|:---:|
+| <img src="screenshots/quiz_home_play.png" width="200" alt="Home screen with pulsing Play button"> | <img src="screenshots/quiz_question.png" width="200" alt="Quiz question: Find the Mango"> | <img src="screenshots/quiz_correct.png" width="200" alt="Correct answer with confetti"> | <img src="screenshots/quiz_result.png" width="200" alt="Result screen with stars"> |
 
 ## Installation
 
